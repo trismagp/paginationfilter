@@ -1,84 +1,71 @@
 const nbStudentsPerPage = 10;
 
-function displayStudents(){
-  const nbStudents = $("li.student-item.show").length;
-  console.log(nbStudents);
-  // calculating the number of pages needed
-  // depending on the total number of students and
-  // and number of students we want to display per page
-  const nbPages = Math.ceil(nbStudents / nbStudentsPerPage);
-  $('ul.pagination').remove();
-  if(nbPages > 1){
-    // appending the unorder list for the pagination links
-    $('.page').append('<ul class="pagination"></ul>')
-
-    // appending the pagination links
-    for (var i = 0; i < nbPages; i++) {
-      $('ul.pagination').append(`<li><a>${i+1}</a></li>`)
-    }
-
-    //adding the class "active" to the first pagination link
-    // $('ul.pagination').find('a').eq(0).addClass('active');
-    $('ul.pagination a').eq(0).addClass('active');
-  }
-
-  applyPaginationLinks();
-
-  // hiding all the students
-  $("li.student-item.hide").hide();
-  // ..then displaying only the first page students
-  for(var i = 0; i < nbStudentsPerPage; i ++){
+function displayStudents(pageNum){
+  const maxIndex = nbStudentsPerPage * pageNum;
+  const minIndex = maxIndex - nbStudentsPerPage;
+  $("li.student-item").hide();
+  for(var i = minIndex; i < maxIndex; i ++){
     $("li.student-item.show").eq(i).show();
   }
 }
 
-function applyPaginationLinks(){
-  // pagination links click listener
-  $('ul.pagination a').on('click',function(){
-
-    // calculating the students maxIndex and minIndex
-    // than we want to display in one page
-    const pageNum = $(this).html();
-    const maxIndex = nbStudentsPerPage * pageNum;
-    const minIndex = maxIndex - nbStudentsPerPage;
-
-    // hiding all the students first
-    $("li.student-item").hide();
-    console.log($("li.student-item").length);
-
-    // displaying the students from minIndex to maxIndex
-    for(var i = minIndex; i < maxIndex; i ++){
-      $("li.student-item.show").eq(i).show();
+function addPaginationLinks(pageNum,nbPages){
+  $('ul.pagination').remove();
+  if(nbPages > 1){
+    // appending the unorder list for the pagination links
+    $('.page').append('<ul class="pagination"></ul>')
+    for (var i = 0; i < nbPages; i++) {
+      $('ul.pagination').append(`<li><a>${i+1}</a></li>`)
     }
+    setActivePaginationLink(pageNum);
+    addPaginationLinksClickListener();
+  }
+}
 
-    // removing the class 'active' from all the pagination links
-    $('ul.pagination a').removeClass('active');
-    // adding the class 'active' to the pagination link that has just been clicked
-    $(this).addClass('active');
+function setActivePaginationLink(pageNum){
+  $('ul.pagination a').removeClass('active');
+  $('ul.pagination a').eq(pageNum - 1).addClass('active');
+}
+
+function addPaginationLinksClickListener(){
+  $('ul.pagination a').on('click',function(){
+    const pageNumClicked = $(this).html();
+    displayStudents(pageNumClicked);
+    setActivePaginationLink(pageNumClicked);
   })
 }
 
-function addSearch(){
+function addSearchForm(){
   $('.page-header').append(`
     <div class="search">
       <input type="text" placeholder="Search for students"/> <button>Search</button>
     </div>
   `);
+  addSearchButtonClickListener();
+}
+
+function addSearchButtonClickListener(){
   $('.search button').on('click', function(){
+    $('.student-item').removeClass('hide');
+    $('.student-item').removeClass('show');
     $('.student-item').each(function(){
       if($(this).find('h3').text().search($('.search input').val()) > -1){
-        $(this).removeClass('hide');
         $(this).addClass('show');
       }else{
-        $(this).removeClass('show');
         $(this).addClass('hide');
       }
     });
-    displayStudents();
+    displayPage();
   })
 }
 
+function displayPage(pageNum = 1){
+  const nbStudents = $("li.student-item.show").length;
+  const nbPages = Math.ceil(nbStudents / nbStudentsPerPage);
+  displayStudents(pageNum);
+  addPaginationLinks(pageNum,nbPages);
+}
 
 $("li.student-item").addClass("show");
-displayStudents();
-addSearch();
+displayPage();
+addSearchForm();
