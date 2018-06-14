@@ -21,6 +21,12 @@ body{
     text-transform: uppercase;
     font-weight: bold;
     color: #555;
+    margin-right: 20px;
+  }
+
+  .page-header p{
+    padding: 5px;
+    color: grey;
   }
 
   .page-header .student-search{
@@ -134,4 +140,9 @@ body{
     border: 1px solid #eaeaea;
     border-radius: 5px;
     background-color: #4ba6c3;
+  }
+
+  .search button:hover{
+    color:#4ba6c3;
+    background-color: white;
   }
