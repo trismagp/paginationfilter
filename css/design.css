@@ -99,7 +99,7 @@ body{
   margin: 40px 0 0 0;
   text-align: center;
 }
- 
+
   .pagination li{
     display: inline;
   }
@@ -117,3 +117,21 @@ body{
       background-color: #4ba6c3;
       color: #fff;
     }
+
+  .search{
+    float: right;
+  }
+
+  .search input{
+    padding: 7px;
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+  }
+
+  .search button{
+    padding: 7px 20px;
+    color:white;
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+    background-color: #4ba6c3;
+  }
